@@ -189,14 +189,13 @@ $$
 \end{aligned}
 $$ (eq-disc-adm-rhs)
 
-This is Eq. {eq}`eq-adm-evolution` with every $\partial$ replaced by $D$. Two points differ from the BSSN kernel
-({mod}`pynr.kernels.bssn`, chapter *BSSN and moving punctures*):
+This is Eq. {eq}`eq-adm-evolution` with every $\partial$ replaced by $D$. Two properties of this discretisation
+matter later:
 
-- **Advection is centred.** $\beta^m D_m$ uses the same centred operator as every other derivative. BSSN upwinds
-  it (a one-sided stencil shifted along $\beta^m$) because a moving puncture has large shift; the ADM runs in pyNR have zero or
-  static, moderate shift.
-- **No constraint is added.** The RHS is exactly the ADM system. This system is weakly hyperbolic, and the growth
-  of $\mathcal O(h^4)$ constraint errors is the instability that the ADM problems show.
+- **Advection is centred.** $\beta^m D_m$ uses the same centred operator as every other derivative. That is adequate
+  here because the ADM runs in pyNR have zero or static, moderate shift.
+- **No constraint is added.** The RHS is exactly the ADM system. This system is only weakly hyperbolic, and the
+  growth of $\mathcal O(h^4)$ constraint errors is the instability that the ADM problems show.
 
 The gauge equations are
 
@@ -415,7 +414,7 @@ the measured time per point on each machine.
 |---|---|---|
 | first/second/mixed derivatives | centred 5-point / compact 5-point / $4\times4$ product | $\mathcal O(h^4)$ |
 | Ricci, Christoffels, $\partial g^{-1}$ | algebraic in the discrete derivatives | $\mathcal O(h^4)$ |
-| shift advection | centred (not upwinded) | $\mathcal O(h^4)$ |
+| shift advection | centred | $\mathcal O(h^4)$ |
 | Kreiss-Oliger | $\frac{\epsilon}{64}h^5(D_+D_-)^3$ | $\mathcal O(\epsilon h^5)$ |
 | outer boundary | static / Sommerfeld with 2nd-order one-sided differences | $\mathcal O(h^2)$ at the boundary |
 | excision | frozen data | not convergent; it must lie inside the horizon |
