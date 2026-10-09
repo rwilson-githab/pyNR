@@ -205,7 +205,132 @@ these data (exercise 4).
 
 The areal radius is $R = r$ in every row except isotropic, where $R = r(1 + M/2r)^2$.
 
-## 7. Pseudocode: analytic metric to grid data
+(sec-sid-cartesian)=
+## 7. Putting spherical data on the Cartesian grid
+
+pyNR stores **only Cartesian components**. `ADMBase.U[0:6]` holds `gxx gxy gxz gyy gyz gzz`
+(the table *Layout of the ADM state array* in [The 3+1 split](three-plus-one.md)) at the grid points $(x_i, y_j, z_k)$. There is no `grr`. The formulas in §2-§5 are written
+with spherical components ($\gamma_{rr}$, $\gamma_{\theta\theta}$, $\beta^r$, $K_{rr}$, …), so they must be
+**transformed as tensors** before they go into the grid. Copying $\gamma_{rr}$ into `gxx` would be wrong everywhere
+except on the $x$ axis.
+
+**Why Cartesian.** The evolution kernels ({ref}`sec-discretisation`) take every derivative with the same Cartesian
+stencils. Spherical coordinates would add $1/r$ and $1/\sin\theta$ terms, which are singular at the origin and on the
+axis. A Cartesian grid has neither problem, and it handles non-spherical data (spin, perturbations) without change.
+The price is that spherical symmetry is no longer manifest in the components.
+
+**The transformation.** Every spherically symmetric spatial metric can be written with two radial functions $A(r)$
+and $B(r)$:
+
+$$
+    dl^2 = A(r)\,dr^2 + B(r)\,r^2 d\Omega^2 .
+$$ (eq-sid-spherical-metric)
+
+On the grid $x^i = r\,n^i$, so $dr = n_i\,dx^i$ and $r^2d\Omega^2 = \delta_{ij}dx^idx^j - dr^2$. Substituting gives
+
+$$
+    \gamma_{ij} = A\,n_in_j + B\,(\delta_{ij} - n_in_j)
+    = B\,\delta_{ij} + (A - B)\,n_in_j .
+$$ (eq-sid-cartesian-metric)
+
+The two pieces are the radial projector $n_in_j$ and the tangential projector $\delta_{ij} - n_in_j$. Any symmetric
+tensor with spherical symmetry, including $K_{ij}$, has the same form:
+
+$$
+    K_{ij} = K_{rr}\,n_in_j + K_T\,(\delta_{ij} - n_in_j),\qquad K_T = K_{\theta\theta}/r^2 .
+$$ (eq-sid-cartesian-K)
+
+Vectors follow from $\partial x^i/\partial r = n^i$: a radial shift $\beta^r$ becomes $\beta^i = \beta^r n^i$, and
+$\beta_i = \beta_r n_i$. The lapse is a scalar and is copied unchanged.
+
+Written out, the six stored metric components are
+
+$$
+    \texttt{gxx} = B + (A-B)\frac{x^2}{r^2},\quad
+    \texttt{gxy} = (A-B)\frac{xy}{r^2},\quad
+    \texttt{gyy} = B + (A-B)\frac{y^2}{r^2},\ \dots
+$$ (eq-sid-gxx)
+
+with the other components following the same pattern.
+
+| coordinates | $A = \gamma_{rr}$ | $B = \gamma_{\theta\theta}/r^2$ | $\beta^r$ | $K_{rr}$ | $K_T = K_{\theta\theta}/r^2$ |
+|---|---|---|---|---|---|
+| Schwarzschild | $(1 - 2M/r)^{-1}$ | 1 | 0 | 0 | 0 |
+| isotropic | $\psi^4$ | $\psi^4$ | 0 | 0 | 0 |
+| Kerr-Schild | $1 + 2M/r$ | 1 | $\frac{2M/r}{1+2M/r}$ | $-\frac{2M\alpha}{r^2}\left(1 + \frac Mr\right)$ | $\frac{2M\alpha}{r^2}$ |
+| Painlevé-Gullstrand | 1 | 1 | $\sqrt{2M/r}$ | $-\tfrac12\sqrt{2M/r^3}$ | $\sqrt{2M/r^3}$ |
+
+Inserting these rows into Eqs. {eq}`eq-sid-cartesian-metric` and {eq}`eq-sid-cartesian-K` gives
+Eqs. {eq}`eq-sid-schwarzschild-31`, {eq}`eq-sid-isotropic`, {eq}`eq-sid-ks-31`, {eq}`eq-sid-ks-K` and
+{eq}`eq-sid-pg-31`.
+
+Two special cases are worth knowing:
+
+- **Isotropic data need no transformation** ($A = B$): $\gamma_{ij} = \psi^4\delta_{ij}$, so `gxx = gyy = gzz` $=\psi^4$
+  and the off-diagonal components vanish. `schwarzschild_isotropic` sets exactly that. This is also why
+  `initial_lapse = "psi^-2"` can be computed as `gxx**-0.5`.
+- **Kerr-Schild is Cartesian by construction.** $g_{\mu\nu} = \eta_{\mu\nu} + 2H\,l_\mu l_\nu$ is already written
+  with Cartesian $l_i$. For spin $a \ne 0$ the data are not spherically symmetric, $l_i$ is not $n_i$, and
+  Eq. {eq}`eq-sid-cartesian-metric` does not apply. `_kerr_schild_metric` builds $\gamma_{ij} = \delta_{ij} + 2Hl_il_j$
+  directly. Its $r$ is the Kerr radius, the root of $r^4 - (\rho^2 - a^2)r^2 - a^2z^2 = 0$ with
+  $\rho^2 = x^2+y^2+z^2$; for $a = 0$ it equals $\rho$.
+
+**Reading the output.** The same projections work backwards:
+
+$$
+    \gamma_{rr} = n^in^j\gamma_{ij},\qquad
+    \gamma_{\theta\theta} = r^2\,\hat e_\theta^{\,i}\hat e_\theta^{\,j}\gamma_{ij},\qquad
+    K_{rr} = n^in^jK_{ij},\qquad
+    \beta^r = n_i\beta^i ,
+$$ (eq-sid-project)
+
+where $\hat e_\theta$ is the flat unit vector in the $\theta$ direction. On the positive $x$ axis, $n = (1,0,0)$ and
+$\hat e_\theta = (0,0,-1)$, so
+
+$$
+    \texttt{gxx} = \gamma_{rr},\qquad \texttt{gyy} = \texttt{gzz} = \gamma_{\theta\theta}/r^2,\qquad
+    \texttt{kxx} = K_{rr},\qquad \texttt{betax} = \beta^r .
+$$ (eq-sid-xaxis)
+
+1D output along $x$ (`gxx.x.dat`, `kxx.x.dat`, as plotted with kuibit) therefore shows the radial components directly.
+Along any other line, use Eq. {eq}`eq-sid-project`. For example, on the diagonal $x = y = z$,
+$\texttt{gxx} = \frac13\gamma_{rr} + \frac23\gamma_{\theta\theta}/r^2$.
+
+**What `Exact.initial_data` does.** It evaluates the model on the full 3D coordinate arrays and writes the
+components into the state array:
+
+```python
+X, Y, Z = grid.meshgrid()                    # Cartesian coordinates of every point, ghosts included
+g, K, alp, beta = solution(0.0, X, Y, Z)     # g[6], K[6]: packed Cartesian components (PAIR order)
+U[0:6] = g                                   # gxx gxy gxz gyy gyz gzz
+U[6:12] = K                                  # kxx ... kzz
+U[12] = alp                                  # or psi^-2 / one, by ADMBase::initial_lapse
+U[13:16] = beta                              # contravariant beta^x, beta^y, beta^z, if initial_shift = "exact"
+```
+
+A new spherically symmetric model needs only $A$, $B$, $K_{rr}$, $K_T$, $\alpha$ and $\beta^r$ as functions of $r$:
+
+```python
+def spherical_to_cartesian(A, B, Krr, KT, alp, beta_r, x, y, z):
+    r = np.sqrt(x * x + y * y + z * z)
+    n = (x / r, y / r, z / r)
+    g, K = np.empty((6, *r.shape)), np.empty((6, *r.shape))
+    for c, (i, j) in enumerate(PAIR):                     # PAIR: (0,0) (0,1) (0,2) (1,1) (1,2) (2,2)
+        d = 1.0 if i == j else 0.0
+        g[c] = B * d + (A - B) * n[i] * n[j]              # Eq. (sid-cartesian-metric)
+        K[c] = KT * d + (Krr - KT) * n[i] * n[j]          # Eq. (sid-cartesian-K)
+    beta = np.array([beta_r * n[i] for i in range(3)])    # beta^i = beta^r n^i
+    return g, K, alp, beta
+```
+
+With the Kerr-Schild row of the table and $M = 1$, this function reproduces `kerr_schild(spin=0)` at random points:
+$\gamma_{ij}$ and $\beta^i$ to round-off, and $K_{ij}$ to $7\times10^{-12}$ (relative). The difference is the
+finite-difference error of `kerr_schild`'s numerical $K_{ij}$ (§4).
+
+Points with $r = 0$ give $n = 0/0$. Keep the centre between grid points, or inside the excision region, where
+ADMEvolve replaces non-finite values with flat space.
+
+## 8. Pseudocode: analytic metric to grid data
 
 This is the generic version of what `kerr_schild` does. It works for any stationary metric given as functions
 $\gamma_{ij}(\mathbf x)$, $\beta_i(\mathbf x)$ and $\alpha(\mathbf x)$:
