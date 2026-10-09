@@ -8,6 +8,7 @@ implement each topic, so the equations you read are the ones the code solves.
 :glob:
 
 three-plus-one
+schwarzschild-initial-data
 gauge
 bssn*
 numerical-methods

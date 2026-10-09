@@ -25,6 +25,9 @@
 
 ## Exact solutions used as initial data
 
+The Schwarzschild data in isotropic, Kerr-Schild and other coordinates are derived step by step in
+{ref}`sec-schwarzschild-id`.
+
 ```{eval-rst}
 .. automodule:: pynr.thorns.exact
    :no-members:

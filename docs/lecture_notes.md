@@ -7,6 +7,7 @@
 :glob:
 
 theory/three-plus-one
+theory/schwarzschild-initial-data
 theory/gauge
 theory/bssn*
 theory/gw-extraction
