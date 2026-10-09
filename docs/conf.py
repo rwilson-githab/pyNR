@@ -152,8 +152,13 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.graphviz",
     "sphinx_copybutton",
+    "sphinxcontrib.bibtex",
     "docgraph",
 ]
+# journal references: {cite:p}`key` in pages, entries in docs/references.bib
+bibtex_bibfiles = ["references.bib"]
+bibtex_reference_style = "author_year"
+bibtex_default_style = "unsrt"
 try:
     import sphinxcontrib.mermaid  # noqa: F401
 

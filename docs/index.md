@@ -48,6 +48,15 @@ reproducing-figures
 
 theory/index
 notes/index
+references
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Comparison with the Einstein Toolkit
+:glob:
+
+comparison/index*
 ```
 
 ```{toctree}
@@ -68,8 +77,9 @@ reference/index
 ```{toctree}
 :maxdepth: 2
 :caption: Roadmap
+:glob:
 
-roadmap/index
+roadmap/index*
 ```
 
 ```{toctree}
@@ -77,5 +87,5 @@ roadmap/index
 :caption: rkdev: personal workflow
 :glob:
 
-rkdev/index
+rkdev/index*
 ```

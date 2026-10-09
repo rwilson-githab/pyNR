@@ -65,3 +65,14 @@ docs/data/**/parameters.par
 !docs/data/schwarzschild_perturbed/mp_Psi4_l4_m0_r6.00.asc
 !docs/data/schwarzschild_perturbed/parameters.par
 !docs/data/schwarzschild_perturbed/pynr.log
+!docs/data/schwarzschild_puncture_bssn/alp.minimum.asc
+!docs/data/schwarzschild_puncture_bssn/W.minimum.asc
+!docs/data/schwarzschild_puncture_bssn/profile.dat
+!docs/data/schwarzschild_puncture_bssn/parameters.par
+!docs/data/schwarzschild_puncture_bssn/pynr.log
+# Comparison with the Einstein Toolkit (docs/comparison/): small ET + pyNR extract (< 2 MB), written by
+# scripts/export_et_comparison.py. All of it is tracked, including ET .par files and runs.yaml.
+!docs/data/et_comparison/**
+# spack environments: only spack.yaml is tracked; the lock file and the environment are generated
+.spack-env/
+spack.lock

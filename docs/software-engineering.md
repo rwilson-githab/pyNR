@@ -35,7 +35,7 @@ Every hot loop exists twice: a Numba kernel ({mod}`pynr.kernels.adm`) and a vect
 ({mod}`pynr.kernels.adm_numpy`). The test suite checks that the two agree, and {mod}`pynr.backends` selects one
 at run time. The optimisation history (direction-specialised stencils, the contracted Ricci tensor, loop order for
 dissipation) and the remaining gap to C++ are measured on a stated machine in [Performance](performance.md). The next
-step, row-vectorised kernels, is on the [roadmap](roadmap/index.md).
+step, row-vectorised kernels, is planned.
 
 ## Verification and validation
 
@@ -64,7 +64,7 @@ step, row-vectorised kernels, is on the [roadmap](roadmap/index.md).
   numbered and cross-referenced.
 - The same sources build the HTML site and the PDF lecture notes.
 - The architecture drift check and the per-problem workflows keep diagrams, code and text consistent.
-- The roadmap records plans and decisions, and who made them ([decision log](roadmap/decisions.md)).
+- Plans, decisions and who made them are recorded on the development branch.
 
 ## Process
 
@@ -82,4 +82,4 @@ step, row-vectorised kernels, is on the [roadmap](roadmap/index.md).
 - **One node:** a uniform grid with no mesh refinement, and no MPI or GPU yet.
 - **Kernel speed:** the kernels are 3–5× slower than tuned C++.
 
-Each of these is a [roadmap](roadmap/index.md) item with an acceptance test.
+Each of these is a planned step with an acceptance test.

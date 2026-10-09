@@ -34,6 +34,30 @@ pip install -e ".[viz,test]"
 python -m ipykernel install --user --name pynr --display-name "Python (pyNR conda)"
 ```
 
+## With spack (any machine)
+
+The directory `env/` holds the minimal files to go from [spack](https://spack.io) to a working pyNR whose Numba
+kernels are compiled:
+
+| file | role |
+|---|---|
+| `env/spack.yaml` | spack environment with Python 3.11 |
+| `env/setup.sh` | `.venv` from that Python, `pip install -e ".[dev]"`, `pynr thorns`, then the tests (the first run compiles the Numba kernels) |
+| `env/env.sh` | activates `.venv` in a new shell |
+
+```bash
+spack -e env install          # once: Python 3.11 in env/.spack-env (or: spack env create pynr env/spack.yaml && spack -e pynr install)
+env/setup.sh                  # once: .venv + pyNR + tests
+source env/env.sh             # every new shell
+pynr run par/gauge_wave.par
+```
+
+`setup.sh` takes the interpreter from `$PYTHON`, else the in-place spack environment, else the named one (`pynr`),
+else `python3` on the `PATH`; `VENV=` chooses another venv directory, the first argument other extras
+(`env/setup.sh test`), `SKIP_TESTS=1` skips the tests. What spack generates (`env/spack.lock`, `env/.spack-env/`) and
+the venv are git-ignored. Tested on rahul-Legion (2026-10-05): spack reused its Python 3.11.7 (5 s); `setup.sh test`
+took 44 s, of which the tests (23 passed, 1 skipped) 10 s.
+
 ## Using the virtual environment
 
 A virtual environment (`.venv`) is a private Python installation for pyNR.

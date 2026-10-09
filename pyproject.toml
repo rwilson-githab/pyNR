@@ -35,6 +35,7 @@ docs = [
     "matplotlib>=3.7",  # figures are drawn from docs/data at build time
     "pyyaml>=6",        # arch/model.yaml (architecture diagrams, workflows)
     "sphinxcontrib-mermaid>=0.9",
+    "sphinxcontrib-bibtex>=2.6",  # journal references (docs/references.bib)
     "sphinx>=7.2",
     "furo>=2024.1",
     "myst-parser>=2.0",

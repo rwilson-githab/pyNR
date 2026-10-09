@@ -45,7 +45,7 @@ What this problem demonstrates today is the **extraction machinery**:
 $\Psi_4$ on the grid, interpolation to geodesic spheres, ${}_{-2}Y_{\ell m}$
 projection and kuibit-compatible output. Validating the physics (the QNM
 frequency) needs a formulation that stays stable for $\gtrsim 100M$. That is
-the BSSN/Z4c milestone on the [roadmap](../roadmap/index.md), and this problem is
+the BSSN/Z4c milestone on the roadmap, and this problem is
 its acceptance test.
 
 ## Caveats
@@ -54,6 +54,46 @@ its acceptance test.
 - Finite extraction radius: $\Psi_4(r)$ differs from $\Psi_4(\infty)$ at
   $\mathcal{O}(M/r)$.
 - The ADM system limits the useful part of the run to $t \lesssim 20M$ (see problem 5).
+
+## How to run
+
+**1. Environment (once).** pyNR needs Python ≥ 3.10 with NumPy, Numba, SciPy and h5py (kuibit and
+matplotlib for the plots). There is no compiler to configure and nothing to build: Numba compiles the kernels to
+machine code through LLVM the first time they run and caches the result next to the sources, so only the first run
+in a fresh checkout spends a few seconds compiling.
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate     # or a conda env: see Installation
+pip install -e ".[viz]"
+```
+
+| setting | how | default |
+|---|---|---|
+| threads | `export NUMBA_NUM_THREADS=8` | all cores |
+| JIT cache location (clusters, read-only checkouts) | `export NUMBA_CACHE_DIR=$HOME/.numba_cache` | next to the sources |
+| kernels | `pynr run … --backend numpy` (readable NumPy reference kernels, much slower) | Numba |
+| output root | `export PYNR_OUTPUT_DIR=/scratch/runs` | `simulations/` of the checkout |
+
+See [Installation](../installation.md) for conda, Jupyter and Codespaces.
+
+**2. Run.**
+
+```bash
+pynr run par/schwarzschild_perturbed.par                       # → simulations/schwarzschild_perturbed/
+pynr run par/schwarzschild_perturbed.par --set Thorn::param=value   # change a parameter without editing the file
+```
+
+**3. Look at the output** (Carpet formats, readable by kuibit):
+
+```python
+from kuibit.simdir import SimDir
+from pynr.paths import run_dir
+sd = SimDir(run_dir("schwarzschild_perturbed"))
+```
+
+**Cost.** 9.9 min on an Apple M3 Pro (12 threads); 18.7 min on an Intel i7-12700H laptop (20 threads).
+
+**Einstein Toolkit counterpart:** {ref}`et-cmp-perturbed` in the comparison with the Einstein Toolkit.
 
 ```{include} ../_generated/arch/workflow_schwarzschild_perturbed.md
 ```

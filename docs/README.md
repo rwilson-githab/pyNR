@@ -26,7 +26,7 @@ open docs/_build/html/index.html
 | `theory/` | lecture notes, rendered from the module docstrings (`automodule`) |
 | `notes/` | notes imported from TiddlyWiki (`python scripts/tiddlywiki2md.py …`) |
 | `framework.md`, `utilities.md`, `performance.md`, `architecture.md`, `developer-guide.md`, `software-engineering.md` | code design |
-| `roadmap/` | roadmap, decision log, open suggestions, templates; `roadmap/plans/` (rkdev only) |
+| `roadmap/` | roadmap, decision log, open suggestions, templates, plans (rkdev only) |
 | `rkdev/` | personal workflow: branches and promotion (rkdev only) |
 | `lecture_notes.md` | root of the PDF lecture notes (`make -C docs latexpdf`) |
 | `data/` | the simulation data behind every figure (kuibit-readable); see `data/README.md` |

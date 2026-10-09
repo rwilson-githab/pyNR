@@ -10,7 +10,8 @@ so tests can compare an evolution with the exact solution at any time.
 Models
 ------
 
-**Minkowski/gauge wave** (Apples-with-Apples test; Alcubierre et al. 2004).
+**Minkowski/gauge wave** (Apples-with-Apples test; Alcubierre et al. 2004 :cite:p:`Alcubierre2004`,
+`doi:10.1088/0264-9381/21/2/019 <https://doi.org/10.1088/0264-9381/21/2/019>`_).
 Flat space in a time-dependent slicing:
 
 $$

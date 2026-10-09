@@ -1,0 +1,15 @@
+# Spack environment for pyNR: a Python 3.11 built by spack (with gcc 12.3), from which env/setup.sh makes the
+# project's virtual environment. NumPy, Numba, SciPy, h5py come from pip wheels inside that venv (h5py's wheel
+# carries its own HDF5), so nothing else is needed from spack. Only this file is tracked; spack.lock and .spack-env/
+# are generated (git-ignored).
+#
+#   spack -e env install                                    # (a) in place, in this directory
+#   spack env create pynr env/spack.yaml && spack -e pynr install   # (b) or as the named environment "pynr"
+#   env/setup.sh                                            # venv + pip install -e ".[dev]" + Numba compile check
+#   source env/env.sh                                       # every new shell
+spack:
+  specs:
+  - python@3.11 +ssl +sqlite3 +bz2 +lzma +zlib
+  view: true
+  concretizer:
+    unify: true

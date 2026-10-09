@@ -40,6 +40,9 @@
    :no-members:
 ```
 
+How these pieces combine into one ADM time step, with the error of each stage and pseudocode, is in
+{ref}`sec-discretisation`.
+
 ## Convergence testing
 
 For a scheme of order $p$, the error at resolution $h$ is $E(h) \approx C h^p$.

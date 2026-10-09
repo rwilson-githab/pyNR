@@ -4,9 +4,11 @@
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
 theory/three-plus-one
 theory/gauge
+theory/bssn*
 theory/gw-extraction
 ```
 
@@ -14,8 +16,10 @@ theory/gw-extraction
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
 theory/numerical-methods
+theory/discretisation
 performance
 ```
 
@@ -23,6 +27,7 @@ performance
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
 problems/index
 visualization
@@ -33,6 +38,7 @@ reproducing-figures
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
 notes/index
 ```
@@ -41,12 +47,13 @@ notes/index
 
 ```{toctree}
 :maxdepth: 2
+:glob:
 
 framework
 architecture
 software-engineering
 developer-guide
-roadmap/index
+roadmap/index*
 devlog/index
 ```
 
@@ -54,7 +61,9 @@ devlog/index
 
 ```{toctree}
 :maxdepth: 1
+:glob:
 
+references
 reference/parameters
 reference/api
 reference/api_index
