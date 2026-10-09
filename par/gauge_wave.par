@@ -22,7 +22,7 @@ CoordBase::periodic_x = yes
 CoordBase::periodic_y = yes
 CoordBase::periodic_z = yes
 
-Time::dtfac = 0.25
+Time::dtfac = 100
 MoL::ODE_Method = "RK4"
 Dissipation::epsdis = 0.0
 
